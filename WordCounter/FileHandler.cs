@@ -13,6 +13,9 @@ namespace WordCounter
         public string fileName;
         public string filePath;
 
+        private IParser parser;
+
+
         private FileHandler()
         {
 
@@ -24,31 +27,41 @@ namespace WordCounter
                 instance = new FileHandler();
             return instance;
         }
-        public void SetName(string f) {
+
+        //<summary>
+        //Устанавливает имя и путь к файлу
+        //</summary>
+        public void SetName(string f)
+        {
 
             filePath = f;
             string[] arr = f.Split('/');
-            fileName = arr[arr.Length-1];
+            fileName = arr[arr.Length - 1];
         }
-        public void OpenFile() {
-            try
+        public void ReadFile()
+        {
+            string format = fileName.Split('.')[1];
+            switch (format)
             {
-                using (StreamReader sr = new StreamReader(filePath))
-                {
-                    Console.WriteLine(sr.ReadToEnd());
-                }
+                case "html":
+                    parser = new HtmlParse();
+                    break;
+                default:
+                    throw new Exception("Не поддерживаемый формат файла");
+                    break;
             }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-            }
+            PrintResault(parser.Pars(filePath));
 
-        }
-        public void ReadFile() {
-            
         }
         public void SaveFile() { }
         public void PrintProccess() { }
-
+        public void PrintResault(Dictionary<string, int> dic)
+        {
+            var sortedDic = from entry in dic orderby entry.Value ascending select entry;
+            foreach (var item in sortedDic)
+            {
+                Console.WriteLine(item.Key + "  " + item.Value);
+            }
+        }
     }
 }

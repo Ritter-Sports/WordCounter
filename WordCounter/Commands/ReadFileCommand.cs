@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 
 namespace WordCounter;
 
-internal class OpenFileCommnad : Command
+internal class ReadFileCommand : Command
 {
     FileHandler file;
-    public OpenFileCommnad(FileHandler f) { 
+    public ReadFileCommand(FileHandler f)
+    {
         file = f;
     }
     public override void Execute()
@@ -21,5 +22,7 @@ internal class OpenFileCommnad : Command
     {
         throw new NotImplementedException();
     }
+   
+
 }
 
