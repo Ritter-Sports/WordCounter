@@ -10,7 +10,10 @@ internal class SaveTXT:ISave
 {
     public void Save(string path) {
 
-        using (FileStream fs = new FileStream(path))
+        using (FileStream fs = new FileStream(path)) {
+        
+        
+        }
     
     
     }
