@@ -8,14 +8,29 @@ namespace WordCounter;
 
 internal class SaveTXT:ISave
 {
-    public void Save(string path) {
+    public void Save(FileHandler file,string p) {
 
-        using (FileStream fs = new FileStream(path)) {
-        
-        
+        string path =p+ file.FileName.Split('.')[0] + "Resault.txt";
+        try
+        {
+            using (StreamWriter sw = File.CreateText(path))
+            {
+                var sortedDic = from entry in file.Dic orderby entry.Value select entry;
+                foreach (var item in sortedDic)
+                {
+                    sw.WriteLine(item.Key + "  " + item.Value);
+
+                }
+
+            }
+        }catch (Exception ex) { 
+            Program.Print(ex.Message);
         }
-    
-    
+    }
+    private static void AddText(FileStream fs, string value)
+    {
+        byte[] info = new UTF8Encoding(true).GetBytes(value);
+        fs.Write(info, 0, info.Length);
     }
 }
 

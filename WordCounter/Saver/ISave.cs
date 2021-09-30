@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace WordCounter;
 
-internal interface ISave
+public interface ISave
 {
-    void Save() { }
-    void Save(string path) { }
+    
+    void Save(FileHandler file, string p) { }
 
 }
 

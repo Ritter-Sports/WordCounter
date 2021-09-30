@@ -4,13 +4,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WordCounter.Commands;
+namespace WordCounter;
 
-internal class ExitCommand : WordCounter.Command
+abstract class MacroCommand : Command
 {
+    Command[] command;
+    public MacroCommand(params Command[] c) {
+        command = c;
+    }
     public override void Execute()
     {
-        Environment.Exit(0);
+        foreach (var c in command) {
+            c.Execute();        
+        }
     }
 
     public override void Undo()

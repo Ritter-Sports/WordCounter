@@ -6,23 +6,20 @@ using System.Threading.Tasks;
 
 namespace WordCounter;
 
-internal class ReadFileCommand : Command
+internal class HelpCommand : Command
 {
-    FileHandler file;
-    public ReadFileCommand(FileHandler f)
-    {
-        file = f;
-    }
+
     public override void Execute()
     {
-        file.ReadFile();
+        using (StreamReader sw = new StreamReader("help.txt"))
+        {
+            Program.Print(sw.ReadLine());
+        }
     }
 
     public override void Undo()
     {
         throw new NotImplementedException();
     }
-   
-
 }
 

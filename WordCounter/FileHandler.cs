@@ -6,14 +6,18 @@ using System.Threading.Tasks;
 
 namespace WordCounter
 {
-    internal class FileHandler
+    public class FileHandler
     {
         private static FileHandler instance;
 
-        public string fileName;
-        public string filePath;
+        private string fileName;
+        public string FileName { get { return fileName; } }
 
-        private IParser parser;
+        private string filePath;
+        public string FilePath { get { return filePath; } }
+
+        private Dictionary<string, int> dic = new Dictionary<string, int>();
+        public Dictionary<string, int> Dic { get { return dic; } set { dic = value; } }
 
 
         private FileHandler()
@@ -27,41 +31,45 @@ namespace WordCounter
                 instance = new FileHandler();
             return instance;
         }
+        public static FileHandler CreateNew() {
+            instance = new FileHandler();
+            return instance;
+        }
 
-        //<summary>
-        //Устанавливает имя и путь к файлу
-        //</summary>
-        public void SetName(string f)
+
+        public void SetPath(string f)
         {
-
             filePath = f;
-            string[] arr = f.Split('/');
+            string[] arr = f.Split(@"\");
             fileName = arr[arr.Length - 1];
         }
-        public void ReadFile()
+
+        public static bool PathCheck(string path)
         {
-            string format = fileName.Split('.')[1];
-            switch (format)
+            try
             {
-                case "html":
-                    parser = new HtmlParse();
-                    break;
-                default:
-                    throw new Exception("Не поддерживаемый формат файла");
-                    break;
+                FileStream fs = File.Open(path,FileMode.Open);
+                fs.Close();
+                return true;
             }
-            PrintResault(parser.Pars(filePath));
+            catch (Exception e)
+            {
+                return false;
+            }
+
+           
+        }
+        public static bool PathDirCheck(string path)
+        {
+            FileAttributes fileAttributes = File.GetAttributes(path);
+
+            if (fileAttributes.HasFlag(FileAttributes.Directory))
+            {
+                return true;
+            }
+            return false;
 
         }
-        public void SaveFile() { }
-        public void PrintProccess() { }
-        public void PrintResault(Dictionary<string, int> dic)
-        {
-            var sortedDic = from entry in dic orderby entry.Value ascending select entry;
-            foreach (var item in sortedDic)
-            {
-                Console.WriteLine(item.Key + "  " + item.Value);
-            }
-        }
+
     }
 }

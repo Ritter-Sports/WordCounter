@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace WordCounter;
 
-abstract class Command
+public abstract class Command
 {
     public abstract void Execute();
     public abstract void Undo();

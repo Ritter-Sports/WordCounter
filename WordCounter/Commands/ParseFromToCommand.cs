@@ -6,11 +6,10 @@ using System.Threading.Tasks;
 
 namespace WordCounter;
 
-public interface IParser
+internal class ParseFromToCommand : MacroCommand
 {
-    public void Parse(FileHandler file)
+    public ParseFromToCommand(params Command[] c) : base(c)
     {
     }
 }
-
 

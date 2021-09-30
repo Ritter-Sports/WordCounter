@@ -6,13 +6,14 @@ using System.Threading.Tasks;
 
 namespace WordCounter;
 
-internal class Invoker
+public class Invoker
 {
     Command command;
     public void SetCommand(Command c)
     {
         command = c;
     }
+    
     public void Run()
     {
         command.Execute();
