@@ -23,7 +23,7 @@ internal class ParseCommand : Command
         if (String.IsNullOrEmpty(file.FilePath))
         {
             Program.Print("Нет открытого файла");
-            Program.LogFile($"No open file", 1);
+            Program.LogFile($"No open file", LogSatus.War);
         }
         //выбирает класс обработки в зависимости от расшиерния файла
         string format = file.FileName.Split('.')[1];
@@ -35,7 +35,7 @@ internal class ParseCommand : Command
                 break;
             default:
                 Program.Print("Не поддерживаемый формат файла");
-                Program.LogFile($"Unsupported file format", 1);
+                Program.LogFile($"Unsupported file format", LogSatus.War);
                 break;
         }
         parser.Parse(file);

@@ -35,7 +35,7 @@ internal class HelpCommand : Command
         catch(Exception ex)
         {
             Program.Print("Не удалось обнаружить файл help.txt");
-            Program.LogFile($"Can't find help.txt",1);
+            Program.LogFile($"Can't find help.txt",LogSatus.War);
         }
     }
 

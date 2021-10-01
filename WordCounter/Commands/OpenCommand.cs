@@ -23,7 +23,7 @@ public class OpenCommand : Command
         if (String.IsNullOrEmpty(path))
         {
             Program.Print("Не указан путь файла");
-            Program.LogFile($"Empty path",1);
+            Program.LogFile($"Empty path",LogSatus.War);
         }
         else if (FileHandler.PathCheck(path)) {
             
@@ -34,7 +34,7 @@ public class OpenCommand : Command
         }
         else {
             Program.Print("Файл не существует или к нему нет доступа");
-            Program.LogFile($"Bad path",1);
+            Program.LogFile($"Bad path", LogSatus.War);
         }
             
     }

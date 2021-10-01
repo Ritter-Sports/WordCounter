@@ -20,7 +20,7 @@ namespace WordCounter.Commands
             if (String.IsNullOrEmpty(file.FilePath))
             {
                 Program.Print("Нет открытого файла");
-                Program.LogFile($"No open file", 1);
+                Program.LogFile($"No open file", LogSatus.War);
             }
             else
             {

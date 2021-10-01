@@ -28,12 +28,12 @@ internal class SaveCommand : Command
         if (String.IsNullOrEmpty(path))
         {
             Program.Print("Не указан путь для сохранения файла");
-            Program.LogFile($"Empty path",1);
+            Program.LogFile($"Empty path", LogSatus.War);
         }
         else if (String.IsNullOrEmpty(file.FilePath))
         {
             Program.Print("Нет открытого файла");
-            Program.LogFile($"No open file", 1);
+            Program.LogFile($"No open file", LogSatus.War);
         }
         else if (FileHandler.PathDirCheck(path))
         {
@@ -44,7 +44,7 @@ internal class SaveCommand : Command
                     break;
                 default:
                     Program.Print("Не поддерживаемый формат");
-                    Program.LogFile($"Unsupported file format", 1);
+                    Program.LogFile($"Unsupported file format", LogSatus.War);
                     break;
             }
             
@@ -53,7 +53,7 @@ internal class SaveCommand : Command
         }
         else {
             Program.Print("Директория не сущесвтует или не доступна");
-            Program.LogFile("Directory does not exist or is not accessible", 2);
+            Program.LogFile("Directory does not exist or is not accessible", LogSatus.Err);
         }       
         
     }

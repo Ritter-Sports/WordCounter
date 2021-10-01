@@ -5,6 +5,7 @@ using System.Text;
 using WordCounter.Commands;
 namespace WordCounter;
 
+
 public class Program
 {
     private static ILogger<Logger> logger;
@@ -16,10 +17,10 @@ public class Program
 
         var serviceCollection = new ServiceCollection();
         ConfigureServices(serviceCollection);
-        var serviceProvider = serviceCollection.BuildServiceProvider();       
+        var serviceProvider = serviceCollection.BuildServiceProvider();
         logger = serviceProvider.GetService<ILogger<Logger>>();
 
-       
+
 
 
         Invoker invoker = new Invoker();
@@ -32,7 +33,7 @@ public class Program
             {
                 case "Open":
                     string path = command.Substring(4).Trim();
-                                     
+
                     FileHandler fileHandler = FileHandler.CreateNew();
                     Command openCommand = new OpenCommand(fileHandler, path);
                     invoker.SetCommand(openCommand);
@@ -41,7 +42,7 @@ public class Program
                     break;
 
                 case "Print":
-                    
+
                     fileHandler = FileHandler.GetInstance();
                     Command printCommand = new PrintCommand(fileHandler);
                     invoker.SetCommand(printCommand);
@@ -49,14 +50,14 @@ public class Program
                     break;
 
                 case "Save":
-                    
+
                     string[] param = command.Substring(4).Trim().Split(' ');
                     if (param.Length != 2)
                     {
                         Print("Не верные параметры");
                         break;
                     }
-                    
+
                     fileHandler = FileHandler.GetInstance();
                     Command SaveCommand = new SaveCommand(fileHandler, param[0], param[1]);
                     invoker.SetCommand(SaveCommand);
@@ -64,7 +65,7 @@ public class Program
                     break;
 
                 case "Parse":
-                    
+
                     fileHandler = FileHandler.GetInstance();
                     Command openFileCommnad = new ParseCommand(fileHandler);
                     invoker.SetCommand(openFileCommnad);
@@ -72,14 +73,14 @@ public class Program
                     break;
 
                 case "Help":
-                   
+
                     Command helpCommand = new HelpCommand();
                     invoker.SetCommand(helpCommand);
                     invoker.Run();
                     break;
 
                 case "Exit":
-                    
+
                     Print("GoodBye!");
                     ExitCommand exitCommand = new ExitCommand();
                     invoker.SetCommand(exitCommand);
@@ -93,7 +94,7 @@ public class Program
                         Print("Не верные параметры");
                         break;
                     }
-                    
+
                     Command allCommand = new ParseFromToCommand(param[0], param[1], param[2]);
                     invoker.SetCommand(allCommand);
                     invoker.Run();
@@ -110,26 +111,27 @@ public class Program
     /// </summary>
     public static void Print(string text)
     {
-        Console.WriteLine(text);    
+        Console.WriteLine(text);
     }
     public static void LogFile(string text)
     {
         logger.LogInformation(text);
     }
-    public static void LogFile(string text,int value)
+    public static void LogFile(string text, LogSatus lg)
     {
-        switch (value) {
-            case 0:
+        switch (lg)
+        {
+            case LogSatus.Info:
                 logger.LogInformation(text);
                 break;
-            case 1:
+            case LogSatus.War:
                 logger.LogWarning(text);
                 break;
-            case 2:
+            case LogSatus.Err:
                 logger.LogError(text);
                 break;
         }
-       
+
     }
     private static void ConfigureServices(IServiceCollection services)
     {
@@ -140,3 +142,9 @@ public class Program
 
 }
 
+public enum LogSatus
+{
+    Info = 0,
+    War,
+    Err
+}
