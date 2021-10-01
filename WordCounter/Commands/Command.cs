@@ -5,7 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace WordCounter;
-
+/// <summary>
+/// Абстрактный класс для команд
+/// </summary>
 public abstract class Command
 {
     public abstract void Execute();

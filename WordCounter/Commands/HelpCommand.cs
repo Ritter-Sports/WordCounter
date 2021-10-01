@@ -6,14 +6,36 @@ using System.Threading.Tasks;
 
 namespace WordCounter;
 
+/// <summary>
+/// Выводит на экран список всех команд
+/// </summary>
 internal class HelpCommand : Command
 {
-
+   
     public override void Execute()
     {
-        using (StreamReader sw = new StreamReader("help.txt"))
+        Program.LogFile($"Try Help command");
+        try
         {
-            Program.Print(sw.ReadLine());
+            using (StreamReader sw = new StreamReader("help.txt"))
+            {
+                do
+                {
+                    string? row = sw.ReadLine();
+                    if (row == null)
+                    {
+                        break;
+                    }
+                    Program.Print(row);
+                } while (true);
+
+            }
+            Program.LogFile($"Help command executed");
+        }
+        catch(Exception ex)
+        {
+            Program.Print("Не удалось обнаружить файл help.txt");
+            Program.LogFile($"Can't find help.txt",1);
         }
     }
 

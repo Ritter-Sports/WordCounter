@@ -6,10 +6,14 @@ using System.Threading.Tasks;
 
 namespace WordCounter.Commands;
 
+/// <summary>
+/// Завершает работу приложения
+/// </summary>
 internal class ExitCommand : WordCounter.Command
 {
     public override void Execute()
     {
+        Program.LogFile($"Exit command");
         Environment.Exit(0);
     }
 

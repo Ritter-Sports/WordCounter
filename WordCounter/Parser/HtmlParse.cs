@@ -14,42 +14,57 @@ internal class HtmlParse : IParser
 
     private bool inTag = false;
     private bool isPastLatter = false;
+    private bool isPastAmpersand = false;
+
     private char[] array = new char[BlockSize];
 
     private List<char> newWordArr = new List<char>();
 
+    
+    /// <summary>
+    /// Осуществляет парсинг HTML файла путь к которому указан в FileHandker
+    /// </summary>
     public void Parse(FileHandler file)
     {
         FileInfo f = new FileInfo(file.FilePath);
         double len = f.Length;
         double acc = 0;
+        Span<char> buffer;
         using (StreamReader sr = new StreamReader(file.FilePath))
         {
 
-            Span<char> buffer = new Span<char>(array);
+            buffer = new Span<char>(array);
+            
             do
             {
+                buffer.Clear();
                 int length = sr.ReadBlock(buffer);
                 if (length == 0)
                 {
                     break;
                 }
-                
+
                 RealParse(buffer);
                 acc += length;
-                                Program.Print(Math.Round(acc/(len/100),2)+"% обработанно");
+                Program.Print(Math.Round(acc / (len / 100), 2) + "% обработанно");
 
             } while (true);
+            AddSafely(new String(newWordArr.ToArray()).ToUpper());
 
         }
+
         Program.Print("Обработка завершина");
         file.Dic = dic;
+        file.ParseTime = DateTime.Now;
     }
 
+    /// <summary>
+    /// Выполняет парсинг отдельного блока байт
+    /// </summary>
     private void RealParse(Span<char> buffer)
     {
         foreach (var c in buffer)
-        {
+        {   
             if (inTag)
             {
                 if (Char.IsLetter(c))
@@ -68,25 +83,22 @@ internal class HtmlParse : IParser
                     if (isPastLatter)
                     {
                         newWordArr.Add(c);
-                    }
+                    }                    
                     else
                     {
                         if (newWordArr.Count != 0)
                         {
-                            string word = new String(newWordArr.ToArray()).ToUpper();
-                            int count = 0;
-                            if (dic.TryGetValue(word, out count))
-                            {
-                                dic[word] = count + 1;
-                            }
-                            else
-                            {
-                                dic.Add(word, count + 1);
-                            }
+                            AddSafely(new String(newWordArr.ToArray()).ToUpper());
                             newWordArr.Clear();
                         }
 
                         newWordArr.Clear();
+
+                        if (isPastAmpersand)
+                        {
+                            newWordArr.Add('&');                           
+                            isPastAmpersand = false;
+                        }
                         newWordArr.Add(c);
                         isPastLatter = true;
                     }
@@ -97,12 +109,32 @@ internal class HtmlParse : IParser
                     {
                         inTag = true;
                     }
+                    else if (c == '&')
+                    {
+                        isPastAmpersand = true;
+                    }
                     isPastLatter = false;
 
                 }
 
 
             }
+        }
+    }
+    /// <summary>
+    /// Перед записью в словарь проверяет не находится ли это слово в Ignor.List
+    /// </summary>
+    private void AddSafely(string key)
+    {         
+        int value = 0;
+        if (dic.TryGetValue(key, out value))
+        {
+            dic[key] = value + 1;
+        }
+        else if (!Ignor.List.Contains((key + ';').ToLower()))
+        {
+            dic.Add(key.Trim('&', ';'), value+1);
+
         }
     }
 }

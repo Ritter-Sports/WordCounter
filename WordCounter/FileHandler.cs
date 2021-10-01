@@ -16,6 +16,8 @@ namespace WordCounter
         private string filePath;
         public string FilePath { get { return filePath; } }
 
+        public DateTime ParseTime { get; set; }
+
         private Dictionary<string, int> dic = new Dictionary<string, int>();
         public Dictionary<string, int> Dic { get { return dic; } set { dic = value; } }
 
@@ -40,10 +42,13 @@ namespace WordCounter
         public void SetPath(string f)
         {
             filePath = f;
-            string[] arr = f.Split(@"\");
+            string[] arr = f.Split(@"\",'/');
             fileName = arr[arr.Length - 1];
         }
 
+        /// <summary>
+        /// Проверяет указывает ли путь в существующий и доступный файл
+        /// </summary>
         public static bool PathCheck(string path)
         {
             try
@@ -59,6 +64,10 @@ namespace WordCounter
 
            
         }
+
+        /// <summary>
+        /// Проверяет указывает ли путь в существующую директорию
+        /// </summary>
         public static bool PathDirCheck(string path)
         {
             FileAttributes fileAttributes = File.GetAttributes(path);

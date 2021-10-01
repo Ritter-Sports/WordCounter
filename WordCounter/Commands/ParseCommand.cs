@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace WordCounter;
 
+/// <summary>
+/// Осуществляет парсинг открытого файла
+/// </summary>
 internal class ParseCommand : Command
 {
     FileHandler file;
@@ -16,22 +19,27 @@ internal class ParseCommand : Command
     }
     public override void Execute()
     {
+        Program.LogFile($"Try Parse command");
         if (String.IsNullOrEmpty(file.FilePath))
         {
             Program.Print("Нет открытого файла");
+            Program.LogFile($"No open file", 1);
         }
+        //выбирает класс обработки в зависимости от расшиерния файла
         string format = file.FileName.Split('.')[1];
         switch (format)
         {
             case "html":
                 parser = new HtmlParse();
+                Program.LogFile($"HTMl parse");
                 break;
             default:
-                throw new Exception("Не поддерживаемый формат файла");
+                Program.Print("Не поддерживаемый формат файла");
+                Program.LogFile($"Unsupported file format", 1);
                 break;
         }
         parser.Parse(file);
-       
+        Program.LogFile($"Parse command executed");
     }
 
     public override void Undo()

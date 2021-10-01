@@ -1,33 +1,47 @@
-﻿using System.Text;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Serilog;
+using System.Text;
 using WordCounter.Commands;
 namespace WordCounter;
 
 public class Program
 {
-    private static void AddText(FileStream fs, string value)
-    {
-        byte[] info = new UTF8Encoding(true).GetBytes(value);
-        fs.Write(info, 0, info.Length);
-    }
+    private static ILogger<Logger> logger;
     public static void Main()
     {
+        Log.Logger = new LoggerConfiguration()
+          .WriteTo.File("consoleapp.log")
+          .CreateLogger();
+
+        var serviceCollection = new ServiceCollection();
+        ConfigureServices(serviceCollection);
+        var serviceProvider = serviceCollection.BuildServiceProvider();       
+        logger = serviceProvider.GetService<ILogger<Logger>>();
+
+       
+
 
         Invoker invoker = new Invoker();
 
         do
         {
-            string[] command = Console.ReadLine().Split(' ');
+            string command = Console.ReadLine();
 
-            switch (command[0])
+            switch (command.Split(' ')[0])
             {
                 case "Open":
+                    string path = command.Substring(4).Trim();
+                                     
                     FileHandler fileHandler = FileHandler.CreateNew();
-                    Command openCommand = new OpenCommand(fileHandler, command[1]);
+                    Command openCommand = new OpenCommand(fileHandler, path);
                     invoker.SetCommand(openCommand);
                     invoker.Run();
+
                     break;
 
                 case "Print":
+                    
                     fileHandler = FileHandler.GetInstance();
                     Command printCommand = new PrintCommand(fileHandler);
                     invoker.SetCommand(printCommand);
@@ -35,13 +49,22 @@ public class Program
                     break;
 
                 case "Save":
+                    
+                    string[] param = command.Substring(4).Trim().Split(' ');
+                    if (param.Length != 2)
+                    {
+                        Print("Не верные параметры");
+                        break;
+                    }
+                    
                     fileHandler = FileHandler.GetInstance();
-                    Command SaveCommand = new SaveCommand(fileHandler, command[1], command[2]);
+                    Command SaveCommand = new SaveCommand(fileHandler, param[0], param[1]);
                     invoker.SetCommand(SaveCommand);
                     invoker.Run();
                     break;
 
                 case "Parse":
+                    
                     fileHandler = FileHandler.GetInstance();
                     Command openFileCommnad = new ParseCommand(fileHandler);
                     invoker.SetCommand(openFileCommnad);
@@ -49,12 +72,14 @@ public class Program
                     break;
 
                 case "Help":
+                   
                     Command helpCommand = new HelpCommand();
                     invoker.SetCommand(helpCommand);
                     invoker.Run();
                     break;
 
                 case "Exit":
+                    
                     Print("GoodBye!");
                     ExitCommand exitCommand = new ExitCommand();
                     invoker.SetCommand(exitCommand);
@@ -62,11 +87,14 @@ public class Program
                     break;
 
                 case "ParseFromTo":
-                    fileHandler = FileHandler.CreateNew();
-                    Command open = new OpenCommand(fileHandler, command[1]);
-                    Command parse = new ParseCommand(fileHandler);
-                    Command save = new SaveCommand(fileHandler, command[2], command[3]);
-                    Command allCommand = new ParseFromToCommand(open, parse, save);
+                    param = command.Substring(11).Trim().Split(' ');
+                    if (param.Length != 3)
+                    {
+                        Print("Не верные параметры");
+                        break;
+                    }
+                    
+                    Command allCommand = new ParseFromToCommand(param[0], param[1], param[2]);
                     invoker.SetCommand(allCommand);
                     invoker.Run();
                     break;
@@ -77,10 +105,38 @@ public class Program
             }
         } while (true);
     }
+    /// <summary>
+    /// Осуществляет вывод в консоль
+    /// </summary>
     public static void Print(string text)
     {
-        Console.WriteLine(text);
+        Console.WriteLine(text);    
     }
+    public static void LogFile(string text)
+    {
+        logger.LogInformation(text);
+    }
+    public static void LogFile(string text,int value)
+    {
+        switch (value) {
+            case 0:
+                logger.LogInformation(text);
+                break;
+            case 1:
+                logger.LogWarning(text);
+                break;
+            case 2:
+                logger.LogError(text);
+                break;
+        }
+       
+    }
+    private static void ConfigureServices(IServiceCollection services)
+    {
+        services.AddLogging(configure => configure.AddSerilog())
+               .AddTransient<Logger>();
+    }
+
 
 }
 

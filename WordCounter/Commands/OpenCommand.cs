@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace WordCounter;
 
+/// <summary>
+/// Создает новый FileHandler указывая путь и имя файла
+/// </summary>
 public class OpenCommand : Command
 {
     FileHandler file;
@@ -16,17 +19,22 @@ public class OpenCommand : Command
     }
     public override void Execute()
     {
+        Program.LogFile($"Try Open command with path:{path}");
         if (String.IsNullOrEmpty(path))
         {
             Program.Print("Не указан путь файла");
+            Program.LogFile($"Empty path",1);
         }
         else if (FileHandler.PathCheck(path)) {
             
             Program.Print("Файл успешно найден");
             file.SetPath(path);
+            Program.LogFile($"Open command executed");
+
         }
         else {
             Program.Print("Файл не существует или к нему нет доступа");
+            Program.LogFile($"Bad path",1);
         }
             
     }
