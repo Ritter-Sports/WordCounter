@@ -14,7 +14,7 @@ public class TestsSets
     public void TestSet1()//Простая выборка с тегами и маркерами
     {
         Invoker invoker = new Invoker();
-        string path = @"test\file1.html";
+        string path = @"..\..\..\test\file1.html";
  
         Command command = new OpenCommand(path);
         invoker.SetCommand(command);
@@ -30,7 +30,7 @@ public class TestsSets
     public void TestSet2()//Список игнорируемых слов
     {
         Invoker invoker = new Invoker();
-        string path = @"test\file2.html";
+        string path = @"..\..\..\test\file2.html";
 
         Command command = new OpenCommand(path);
         invoker.SetCommand(command);
@@ -46,7 +46,7 @@ public class TestsSets
     public void TestSet3()//Простой файл с английскими словами
     {
         Invoker invoker = new Invoker();
-        string path = @"test\file3.html";
+        string path = @"..\..\..\test\file3.html";
 
         Command command = new OpenCommand(path);
         invoker.SetCommand(command);

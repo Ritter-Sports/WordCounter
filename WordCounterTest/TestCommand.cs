@@ -15,7 +15,7 @@ public class TestCommand
     public void ReopenTest()//Не корректный вызов команды Open не стирает данные
     {
         Invoker invoker = new Invoker();
-        string path = @"test\file4.html";
+        string path = @"..\..\..\test\file4.html";
 
         //команда открыть тестовый файл
         Command openFileCommand = new OpenCommand(path);
@@ -35,10 +35,10 @@ public class TestCommand
     public void ParseFromToTest()
     {
         Invoker invoker = new Invoker();
-        string from = @"test\file4.html";
-        string to = @"test\";
+        string from = @"..\..\..\test\file4.html";
+        string to = @"..\..\..\test\";
 
-        string resaltFile = @"test\file4Resault.txt";
+        string resaltFile = @"..\..\..\test\file4Resault.txt";
         if (File.Exists(resaltFile)) { File.Delete(resaltFile); }
 
         //команда открыть тестовый файл

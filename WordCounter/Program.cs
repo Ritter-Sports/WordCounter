@@ -12,7 +12,7 @@ public class Program
     public static void Main()
     {
         Log.Logger = new LoggerConfiguration()
-          .WriteTo.File("consoleapp.log")
+          .WriteTo.File(@"..\..\..\consoleapp.log")
           .CreateLogger();
 
         var serviceCollection = new ServiceCollection();

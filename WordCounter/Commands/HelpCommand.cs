@@ -17,7 +17,7 @@ internal class HelpCommand : Command
         Program.LogFile($"Try Help command");
         try
         {
-            using (StreamReader sw = new StreamReader("help.txt"))
+            using (StreamReader sw = new StreamReader(@"../../../help.txt"))
             {
                 do
                 {
