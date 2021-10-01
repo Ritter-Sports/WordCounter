@@ -21,7 +21,7 @@ internal class SaveTXT:ISave
                 sw.WriteLine($"File Name: {file.FileName}");
                 sw.WriteLine($"Parse Time: {file.ParseTime}");
 
-                var sortedDic = from entry in file.Dic orderby entry.Value select entry;
+                var sortedDic = from entry in file.Dic orderby entry.Value descending select entry;
                 foreach (var item in sortedDic)
                 {
                     sw.WriteLine(item.Key + "  " + item.Value);

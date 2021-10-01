@@ -22,7 +22,7 @@ namespace WordCounter.Commands
             {
                 Program.Print($"File Name: {file.FileName}");
                 Program.Print($"Parse Time: {file.ParseTime}");
-                var allWord = from entry in file.Dic orderby entry.Value select entry;
+                var allWord = from entry in file.Dic orderby entry.Value descending select entry;
                 foreach (var item in allWord)
                 {
                     Program.Print(item.Key + "  " + item.Value);
