@@ -10,20 +10,19 @@ namespace WordCounter;
 /// </summary>
 internal class SaveCommand : Command
 {
-    FileHandler file;
-
     string path;
     string extension;
     ISave saver;
 
-    public SaveCommand(FileHandler f, string p,string e)
+    public SaveCommand( string p,string e)
     {
-        file = f;
+        
         path = p;
         extension = e;  
     }
     public override void Execute()
     {
+        FileHandler file = FileHandler.GetInstance();
         Program.LogFile($"Try Save command with path:{path} fileFormat{extension}");
         if (String.IsNullOrEmpty(path))
         {

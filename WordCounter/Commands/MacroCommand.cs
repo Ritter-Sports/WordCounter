@@ -8,7 +8,7 @@ namespace WordCounter;
 /// <summary>
 /// Абстрактный класс для макрокоманд
 /// </summary>
-abstract class MacroCommand : Command
+public abstract class MacroCommand : Command
 {
     Command[] command;
     public Command[] Commands { get { return command; } set { command = value; } }

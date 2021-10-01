@@ -9,16 +9,14 @@ namespace WordCounter;
 /// <summary>
 /// Осуществляет парсинг открытого файла
 /// </summary>
-internal class ParseCommand : Command
+public class ParseCommand : Command
 {
-    FileHandler file;
+    
     IParser parser;
-    public ParseCommand(FileHandler f)
-    {
-        file = f;
-    }
+   
     public override void Execute()
     {
+        FileHandler file = FileHandler.GetInstance();
         Program.LogFile($"Try Parse command");
         if (String.IsNullOrEmpty(file.FilePath))
         {

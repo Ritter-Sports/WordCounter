@@ -9,13 +9,9 @@ namespace WordCounter.Commands
 {
     internal class PrintCommand : WordCounter.Command
     {
-        FileHandler file;
-        public PrintCommand(FileHandler f)
-        {
-            file = f;
-        }
         public override void Execute()
         {
+            FileHandler file = FileHandler.GetInstance();
             Program.LogFile($"Try Print command");
             if (String.IsNullOrEmpty(file.FilePath))
             {

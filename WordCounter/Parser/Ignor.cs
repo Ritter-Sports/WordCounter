@@ -13,7 +13,7 @@ internal static class Ignor
                                                         "&hellip;", "&sect;", "&cent;", "&pound;", "&reg;", "&deg;", "&plusmn;", "&para;",
                                                         "&middot;", "&frac12;", "&ndash;", "&mdash;", "&rsquo;", "&lsquo;", "&sbquo;", "&ldquo;",
                                                         "&rdquo;", "&bdquo;", "&dagger;", "&Dagger;", "&bull;", "&hellip;", "&Prime;", "&prime;",
-                                                        "&euro;", "&trade;", "&asymp;", "&ne;", "&le;", "&ge;", "&lt;", "gt;" };
+                                                        "&euro;", "&trade;", "&asymp;", "&ne;", "&le;", "&ge;", "&lt;", "&gt;" };
     /// <summary>
     /// Возвращает список html маркеров
     /// </summary>

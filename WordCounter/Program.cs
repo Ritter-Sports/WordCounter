@@ -8,7 +8,7 @@ namespace WordCounter;
 
 public class Program
 {
-    private static ILogger<Logger> logger;
+    public static ILogger<Logger> logger;
     public static void Main()
     {
         Log.Logger = new LoggerConfiguration()
@@ -20,10 +20,8 @@ public class Program
         var serviceProvider = serviceCollection.BuildServiceProvider();
         logger = serviceProvider.GetService<ILogger<Logger>>();
 
-
-
-
-        Invoker invoker = new Invoker();
+        Invoker invoker = new Invoker();//исполнитель команд
+        FileHandler fileHandler;//представление файла
 
         do
         {
@@ -33,18 +31,14 @@ public class Program
             {
                 case "Open":
                     string path = command.Substring(4).Trim();
-
-                    FileHandler fileHandler = FileHandler.CreateNew();
-                    Command openCommand = new OpenCommand(fileHandler, path);
+                    Command openCommand = new OpenCommand(path);
                     invoker.SetCommand(openCommand);
                     invoker.Run();
 
                     break;
 
                 case "Print":
-
-                    fileHandler = FileHandler.GetInstance();
-                    Command printCommand = new PrintCommand(fileHandler);
+                    Command printCommand = new PrintCommand();
                     invoker.SetCommand(printCommand);
                     invoker.Run();
                     break;
@@ -57,17 +51,13 @@ public class Program
                         Print("Не верные параметры");
                         break;
                     }
-
-                    fileHandler = FileHandler.GetInstance();
-                    Command SaveCommand = new SaveCommand(fileHandler, param[0], param[1]);
+                    Command SaveCommand = new SaveCommand( param[0], param[1]);
                     invoker.SetCommand(SaveCommand);
                     invoker.Run();
                     break;
 
                 case "Parse":
-
-                    fileHandler = FileHandler.GetInstance();
-                    Command openFileCommnad = new ParseCommand(fileHandler);
+                    Command openFileCommnad = new ParseCommand();
                     invoker.SetCommand(openFileCommnad);
                     invoker.Run();
                     break;
@@ -115,21 +105,25 @@ public class Program
     }
     public static void LogFile(string text)
     {
-        logger.LogInformation(text);
+        if (logger != null)
+            logger.LogInformation(text);
     }
     public static void LogFile(string text, LogSatus lg)
     {
-        switch (lg)
+        if (logger != null)
         {
-            case LogSatus.Info:
-                logger.LogInformation(text);
-                break;
-            case LogSatus.War:
-                logger.LogWarning(text);
-                break;
-            case LogSatus.Err:
-                logger.LogError(text);
-                break;
+            switch (lg)
+            {
+                case LogSatus.Info:
+                    logger.LogInformation(text);
+                    break;
+                case LogSatus.War:
+                    logger.LogWarning(text);
+                    break;
+                case LogSatus.Err:
+                    logger.LogError(text);
+                    break;
+            }
         }
 
     }

@@ -55,7 +55,7 @@ internal class HtmlParse : IParser
 
         Program.Print("Обработка завершина");
         file.Dic = dic;
-        file.ParseTime = DateTime.Now;
+        file.ParseTime = DateTime.UtcNow;
     }
 
     /// <summary>

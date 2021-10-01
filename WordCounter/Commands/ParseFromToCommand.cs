@@ -6,18 +6,18 @@ using System.Threading.Tasks;
 
 namespace WordCounter;
 
-internal class ParseFromToCommand : MacroCommand
+public class ParseFromToCommand : MacroCommand
 {
     /// <summary>
     /// Макро команда выполняющая последовательно команды Open, Parse, Save
     /// </summary>
     public ParseFromToCommand(string from,string to ,string ex) 
     {
-        Program.LogFile($"Try ParseFromTo command with fromPath:{from} toPath:{to} fileFormat{ex}");
+        Program.LogFile($"Try ParseFromTo command with fromPath:{from} toPath:{to} fileFormat{ex}");       
+        Command open = new OpenCommand(from);
         FileHandler fileHandler = FileHandler.CreateNew();
-        Command open = new OpenCommand(fileHandler, from);
-        Command parse = new ParseCommand(fileHandler);
-        Command save = new SaveCommand(fileHandler, to, ex);
+        Command parse = new ParseCommand();
+        Command save = new SaveCommand(to, ex);
         base.Commands = new Command[] { open, parse, save };
         Program.LogFile($"ParseFromTo command executed");
     }

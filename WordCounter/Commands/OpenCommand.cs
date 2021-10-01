@@ -10,11 +10,9 @@ namespace WordCounter;
 /// Создает новый FileHandler указывая путь и имя файла
 /// </summary>
 public class OpenCommand : Command
-{
-    FileHandler file;
+{   
     string path;
-    public OpenCommand(FileHandler f,string p) {        
-        file = f;
+    public OpenCommand(string p) {               
         path = p;
     }
     public override void Execute()
@@ -28,6 +26,7 @@ public class OpenCommand : Command
         else if (FileHandler.PathCheck(path)) {
             
             Program.Print("Файл успешно найден");
+            FileHandler file = FileHandler.CreateNew();
             file.SetPath(path);
             Program.LogFile($"Open command executed");
 
