@@ -1,5 +1,5 @@
 File Name: file4.html
-Parse Time: 10/1/2021 10:45:32 PM
+Parse Time: 10/3/2021 7:12:57 PM
 АРХИТЕКТУРА  1
 КЛИЕНТ  1
 СЕРВЕР  1

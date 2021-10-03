@@ -16,11 +16,16 @@ internal class HtmlParse : IParser
     private bool isPastLatter = false;
     private bool isPastAmpersand = false;
 
+    private bool isIgnorTag = false;
+    private bool isLastIgnorTag = false;
+    private string tag;
+
     private char[] array = new char[BlockSize];
 
     private List<char> newWordArr = new List<char>();
+    private List<char> newTagArr = new List<char>();
 
-    
+
     /// <summary>
     /// Осуществляет парсинг HTML файла путь к которому указан в FileHandker
     /// </summary>
@@ -34,7 +39,7 @@ internal class HtmlParse : IParser
         {
 
             buffer = new Span<char>(array);
-            
+
             do
             {
                 buffer.Clear();
@@ -49,7 +54,14 @@ internal class HtmlParse : IParser
                 Program.Print(Math.Round(acc / (len / 100), 2) + "% обработанно");
 
             } while (true);
-            AddSafely(new String(newWordArr.ToArray()).ToUpper());
+
+            string word = new String(newWordArr.ToArray()).ToUpper();
+            if (!String.IsNullOrEmpty(word))
+            {
+                AddSafely(word);
+            }
+
+
 
         }
 
@@ -64,16 +76,50 @@ internal class HtmlParse : IParser
     private void RealParse(Span<char> buffer)
     {
         foreach (var c in buffer)
-        {   
+        {
             if (inTag)
             {
-                if (Char.IsLetter(c))
+                if (isIgnorTag)
                 {
-                    continue;
+                    if (c == '<')
+                    {
+                        isLastIgnorTag = true;
+                        newTagArr.Clear();
+                    }
+                    else if (isLastIgnorTag)
+                    {
+                        newTagArr.Add(c);
+                        tag =new String(newTagArr.ToArray());
+                        if (Ignor.Tags.Contains(tag.Trim('/')))
+                        {
+                            newTagArr.Clear();
+                            isIgnorTag = false;
+                            isLastIgnorTag = false;
+                            inTag = false;
+                        }
+                    }
+
+
                 }
-                else if (c == '>')
+                else
                 {
-                    inTag = false;
+                    if (Char.IsLetter(c))
+                    {
+                        newTagArr.Add(c);
+                        tag = new String(newTagArr.ToArray());
+                        if (Ignor.Tags.Contains(tag))
+                        {
+                            isIgnorTag = true;
+                            newTagArr.Clear();
+
+                        }
+
+                    }
+                    else if (c == '>')
+                    {
+                        newTagArr.Clear();
+                        inTag = false;
+                    }
                 }
             }
             else
@@ -82,12 +128,12 @@ internal class HtmlParse : IParser
                 {
                     if (isPastLatter)
                     {
-                        newWordArr.Add(c);
-                    }                    
+                        newWordArr.Add(c);                       
+                    }
                     else
                     {
                         if (newWordArr.Count != 0)
-                        {
+                        {                          
                             AddSafely(new String(newWordArr.ToArray()).ToUpper());
                             newWordArr.Clear();
                         }
@@ -96,7 +142,7 @@ internal class HtmlParse : IParser
 
                         if (isPastAmpersand)
                         {
-                            newWordArr.Add('&');                           
+                            newWordArr.Add('&');
                             isPastAmpersand = false;
                         }
                         newWordArr.Add(c);
@@ -107,6 +153,7 @@ internal class HtmlParse : IParser
                 {
                     if (c == '<')
                     {
+                        newTagArr.Clear();
                         inTag = true;
                     }
                     else if (c == '&')
@@ -125,7 +172,7 @@ internal class HtmlParse : IParser
     /// Перед записью в словарь проверяет не находится ли это слово в Ignor.List
     /// </summary>
     private void AddSafely(string key)
-    {         
+    {
         int value = 0;
         if (dic.TryGetValue(key, out value))
         {
@@ -133,7 +180,7 @@ internal class HtmlParse : IParser
         }
         else if (!Ignor.List.Contains((key + ';').ToLower()))
         {
-            dic.Add(key.Trim('&', ';'), value+1);
+            dic.Add(key.Trim('&', ';'), value + 1);
 
         }
     }

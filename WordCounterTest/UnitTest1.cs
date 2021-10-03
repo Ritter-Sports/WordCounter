@@ -59,4 +59,21 @@ public class TestsSets
         Assert.That(FileHandler.GetInstance().Dic, Does.ContainKey("HTML").WithValue(2));
         Assert.That(FileHandler.GetInstance().Dic, Does.ContainKey("REST").WithValue(1));
     }
+    [Test]
+    public void TestSet4()// Script teg test
+    {
+        Invoker invoker = new Invoker();
+        string path = @"..\..\..\test\file5.html";
+
+        Command command = new OpenCommand(path);
+        invoker.SetCommand(command);
+        invoker.Run();
+
+        command = new ParseCommand();
+        invoker.SetCommand(command);
+        invoker.Run();
+
+
+        Assert.IsEmpty(FileHandler.GetInstance().Dic);
+    }
 }
