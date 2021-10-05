@@ -10,9 +10,10 @@ namespace WordCounter;
 /// Создает новый FileHandler указывая путь и имя файла
 /// </summary>
 public class OpenCommand : Command
-{   
+{
     string path;
-    public OpenCommand(string p) {               
+    public OpenCommand(string p)
+    {
         path = p;
     }
     public override void Execute()
@@ -21,21 +22,38 @@ public class OpenCommand : Command
         if (String.IsNullOrEmpty(path))
         {
             Program.Print("Не указан путь файла");
-            Program.LogFile($"Empty path",LogSatus.War);
+            Program.LogFile($"Empty path", LogSatus.War);
         }
-        else if (FileHandler.PathCheck(path)) {
-            
-            Program.Print("Файл успешно найден");
-            FileHandler file = FileHandler.CreateNew();
-            file.SetPath(path);
-            Program.LogFile($"Open command executed");
+        else
+        {
+            string? name = FileHandler.PathCheck(path);
+            if (name == null)//если это не путь
+            {
+                name = FileHandler.URLCheck(path);
+                if (name == null) //если это не путь и не url
+                {
+                    Program.Print("Не поддерживаемый формат файла");
+                    Program.LogFile("Unsupported file format", LogSatus.Err);
+                }
+                else
+                {
+                    Program.Print("Файл успешно найден");
+                    FileHandler file = FileHandler.CreateNew();
+                    file.SetPath(path,name);
+                    file.IsLocal = false;
+                    Program.LogFile($"Open command executed");
+                }
+            }
+            else {
+                Program.Print("Файл успешно найден");
+                FileHandler file = FileHandler.CreateNew();
+                file.SetPath(path,name);              
+                Program.LogFile($"Open command executed");
+            }
+           
+        }
+        
 
-        }
-        else {
-            Program.Print("Файл не существует или к нему нет доступа");
-            Program.LogFile($"Bad path", LogSatus.War);
-        }
-            
     }
 
     public override void Undo()

@@ -20,8 +20,17 @@ namespace WordCounter.Commands
             }
             else
             {
-                Program.Print($"File Name: {file.FileName}");
-                Program.Print($"Parse Time: {file.ParseTime}");
+                if (file.IsLocal)
+                {
+                    Program.Print($"File Name: {file.FileName}");
+                    Program.Print($"Parse Time: {file.ParseTime}");
+                }
+                else 
+                {
+                    Program.Print($"URL: {file.FilePath}");
+                    Program.Print($"File type: {file.FileName}");
+                    Program.Print($"Parse Time: {file.ParseTime}");
+                }
                 var allWord = from entry in file.Dic orderby entry.Value descending select entry;
                 foreach (var item in allWord)
                 {

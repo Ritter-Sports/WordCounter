@@ -23,21 +23,27 @@ public class ParseCommand : Command
             Program.Print("Нет открытого файла");
             Program.LogFile($"No open file", LogSatus.War);
         }
-        //выбирает класс обработки в зависимости от расшиерния файла
-        string format = file.FileName.Split('.')[1];
-        switch (format)
+        else
         {
-            case "html":
-                parser = new HtmlParse();
-                Program.LogFile($"HTMl parse");
-                break;
-            default:
-                Program.Print("Не поддерживаемый формат файла");
-                Program.LogFile($"Unsupported file format", LogSatus.War);
-                break;
+            //выбирает класс обработки в зависимости от расшиерния файла
+            string format = file.FileName.Split('.').Last();
+            switch (format)
+            {
+                case "html":
+                    parser = new HtmlParse();
+                    Program.LogFile($"HTMl parse");
+                    break;              
+                default:
+                    Program.Print("Не поддерживаемый формат файла");
+                    Program.LogFile($"Unsupported file format", LogSatus.War);
+                    break;
+            }
+            if (parser != null)
+            {
+                parser.Parse(file);
+                Program.LogFile($"Parse command executed");
+            }
         }
-        parser.Parse(file);
-        Program.LogFile($"Parse command executed");
     }
 
     public override void Undo()

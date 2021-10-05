@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -25,17 +26,42 @@ internal class HtmlParse : IParser
     private List<char> newWordArr = new List<char>();
     private List<char> newTagArr = new List<char>();
 
+    
 
     /// <summary>
     /// Осуществляет парсинг HTML файла путь к которому указан в FileHandker
     /// </summary>
     public void Parse(FileHandler file)
     {
-        FileInfo f = new FileInfo(file.FilePath);
-        double len = f.Length;
-        double acc = 0;
+       
         Span<char> buffer;
-        using (StreamReader sr = new StreamReader(file.FilePath))
+        Stream stream;
+
+        double len;
+        double acc=0;
+        if (file.IsLocal)
+        {
+            stream = new FileStream(file.FilePath, FileMode.Open);
+            FileInfo f = new FileInfo(file.FilePath);
+            len = f.Length;
+            acc = 0;
+        }
+        else 
+        {
+            WebClient webClient =new WebClient();
+            stream = webClient.OpenRead(file.FilePath);
+            var webRequest = HttpWebRequest.Create(file.FilePath);
+            webRequest.Method = "HEAD";
+
+            using (var webResponse = webRequest.GetResponse())
+            {
+                len = Convert.ToDouble(webResponse.Headers.Get("Content-Length"));
+
+            }
+        }
+       
+
+        using (StreamReader sr = new StreamReader(stream))
         {
 
             buffer = new Span<char>(array);
@@ -60,15 +86,16 @@ internal class HtmlParse : IParser
             {
                 AddSafely(word);
             }
-
-
-
         }
 
         Program.Print("Обработка завершина");
         file.Dic = dic;
         file.ParseTime = DateTime.UtcNow;
     }
+
+  
+
+
 
     /// <summary>
     /// Выполняет парсинг отдельного блока байт
@@ -174,14 +201,18 @@ internal class HtmlParse : IParser
     private void AddSafely(string key)
     {
         int value = 0;
-        if (dic.TryGetValue(key, out value))
+        if (!Ignor.List.Contains((key + ';').ToLower()))
         {
-            dic[key] = value + 1;
-        }
-        else if (!Ignor.List.Contains((key + ';').ToLower()))
-        {
-            dic.Add(key.Trim('&', ';'), value + 1);
+            key = key.Trim('&', ';');
+            if (dic.TryGetValue(key, out value))
+            {
+                dic[key] = value + 1;
+            }
+            else
+            {
+                dic.Add(key, value + 1);
 
+            }
         }
     }
 }
